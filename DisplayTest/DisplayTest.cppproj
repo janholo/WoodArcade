@@ -169,7 +169,22 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BatteryModule.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="BoxHelper.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DefaultModule.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DisplayHelper.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="ModuleInterface.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
