@@ -12,35 +12,110 @@
 class BatteryModule: public IModule 
 {
 	private:
-	int16_t x;
-	int16_t y;
-	char displayData[32];
+	char backgroundData[32] = 
+	{
+		0b01111111, 0xFF, 0xFF, 0xFF,
+		0b01000000, 0x00, 0x00, 0x01,
+		0b11000000, 0x00, 0x00, 0x01,
+		0b10000000, 0x00, 0x00, 0x01,
+		0b10000000, 0x00, 0x00, 0x01,
+		0b11000000, 0x00, 0x00, 0x01,
+		0b01000000, 0x00, 0x00, 0x01,
+		0b01111111, 0xFF, 0xFF, 0xFF
+	};
+	void AddBatteryLevel(char level, char displayData[])
+	{
+		char xMax = 33 - 4*level;
+		char xMin = 31 - 4*level;
+		
+		for(char x = xMin; x <= xMax; x++)
+		{
+			for(char y = 2; y <= 5; y++)
+			{
+				SetPixel(x, y, displayData);
+			}
+		}
+	}
+	uint16_t ReadBatteryValue()
+	{
+		int16_t accumulatedValue = 0;
+		
+		for(int i = 0; i < 16; i++)
+		{
+			ADCSRA |= (1 << ADSC);
+		
+			while(ADCSRA & (1 << ADSC))
+			{
+				// Wait for conversion to complete
+			}
+			
+			accumulatedValue += ADC;
+		}
+						
+		return (accumulatedValue >> 4);
+	}
+	char ReadBatteryLevel()
+	{
+		// Level 0 ... 7
+		
+		//Vref = 9.95V
+		//Full = 2*4.0V = 8.0V => 823
+		//Low  = 2*3.4V = 6.8V => 700
+				
+		// 123 Schritte
+		
+			
+		uint16_t value = ReadBatteryValue();
+		
+		if(value <= 700)
+		{
+			return 0;
+		}
+		else if(value < 820)
+		{
+			char diff = value - 700;
+			return (diff / 20) + 1;
+		}
+		else
+		{
+			//Value >= 820
+			return 7;
+		}
+	}
 	public:
 	virtual void load()
 	{
-		x = 15 << SHIFT;
-		y = 3 << SHIFT;
-		ClearDisplay(displayData);
+		// REFS0 = 1, REFS1 = 0 => Use AVCC as Voltage Reference
+		// ADLAR = 0 => Right Adjusted result
+		// MUXn = 0 => Select ADC0
+		ADMUX = (0 << MUX0) | (0 << MUX1) | (0 << MUX2) | (1 << REFS0);
+		
+		// ADEN = 1 => enable ADC
+		// ADSC = 1 => Start conversion
+		// ADATE = 0 => Auto Trigger disabled
+		// ADIF => read only, is set on interupt
+		// ADIE = 0 => disable interupts
+		// ADPS0 = 0, ADPS1 = 1, ADPS2 = 1 => Prscaler (8000000 / 64 = 125.000Hz)
+		ADCSRA = (1 << ADEN) | (1 << ADSC) | (1 << ADPS2) | (1 << ADPS1);
+		
+		// SFIOR no need to write this register
 	}
 	virtual void update()
 	{
-		x -= ReadJoystickX();
-		if(x < 0) x = 0;
-		if(x > (30 << SHIFT)) x = 30 << SHIFT;
-		y += ReadJoystickY();
-		if(y < 0) y = 0;
-		if(y > (6 << SHIFT)) y = 6 << SHIFT;
-
-		ClearDisplay(displayData);
+		char displayData[32] = {0};
 		
-		int realX = x >> SHIFT;
-		int realY = y >> SHIFT;
+		char level = ReadBatteryLevel();
 		
-		SetPixel(realX, realY, displayData);
-		SetPixel(realX, realY + 1, displayData);
-		SetPixel(realX + 1, realY, displayData);
-		SetPixel(realX + 1, realY + 1, displayData);
-		
+		for(int i = 1; i <= level; i++)
+		{
+			AddBatteryLevel(i, displayData);	
+		}
+			
+		for(int i = 0; i < 32; i++)
+		{
+			displayData[i] |= backgroundData[i];
+		}
+	
 		WriteDisplay(displayData);
 
 		for(int j = 0; j < 8; j++)
@@ -51,7 +126,8 @@ class BatteryModule: public IModule
 	
 	virtual void unload()
 	{
-		
+		// Disable ADC
+		ADCSRA = 0x00;
 	}
 };
 

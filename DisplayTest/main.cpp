@@ -27,7 +27,7 @@ void init()
 	
 	// Joystick & Switches (Pull Ups)
 	DDRA = 0x00;
-	PORTA = 0xFF;
+	PORTA = 0b11111110;
 	DDRB = 0x00;
 	PORTB = 0b00000111;
 
@@ -79,6 +79,8 @@ int main(void)
 		char switches = ReadSwitches();
 		if(oldSwitches != switches)
 		{
+			module->unload();
+			
 			if(switches == 0b00100000)
 			{
 				module = &batteryModule;

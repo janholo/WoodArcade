@@ -116,11 +116,11 @@ void ClearDisplay(char displayData[])
 	}
 }
 
-void SetPixel(int x, int y, char displayData[])
+void SetPixel(char x, char y, char displayData[])
 {
-	int index = (x >> 3) + y * 4;
+	int8_t index = (x >> 3) + y * 4;
 				
-	char temp = displayData[index];
+	char temp = displayData[(int)index];
 	temp |= 1 << (7 - (x & 0x07));
 	displayData[index] = temp;			
 }
