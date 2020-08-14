@@ -121,9 +121,28 @@ void SetPixel(char x, char y, char displayData[])
 	int8_t index = (x >> 3) + y * 4;
 				
 	char temp = displayData[(int)index];
-	temp |= 1 << (7 - (x & 0x07));
+	char bitPos = 7 - (x & 0x07);
+	temp |= 1 << bitPos;
 	displayData[index] = temp;			
 }
 
+void ClearPixel(char x, char y, char displayData[])
+{
+	int8_t index = (x >> 3) + y * 4;
+	
+	char temp = displayData[(int)index];
+	char bitPos = 7 - (x & 0x07);
+	temp &= ~(1 << bitPos);
+	displayData[index] = temp;
+}
+
+bool GetPixel(char x, char y, char displayData[])
+{
+	int8_t index = (x >> 3) + y * 4;
+	
+	char temp = displayData[(int)index];
+	temp &= 1 << (7 - (x & 0x07));
+	return temp;
+}
 
 #endif /* DISPLAYHELPER_H_ */

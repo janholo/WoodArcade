@@ -13,6 +13,7 @@
 #include "ModuleInterface.h"
 #include "DefaultModule.h"
 #include "BatteryModule.h"
+#include "TetrisModule.h"
 #include "BoxHelper.h"
 
 void init() 
@@ -69,6 +70,7 @@ int main(void)
 	
 	DefaultModule defaultModule;
 	BatteryModule batteryModule;
+	TetrisModule tetrisModule;
 	IModule* module = &defaultModule;
 	module->load();
 	
@@ -84,6 +86,10 @@ int main(void)
 			if(switches == 0b00100000)
 			{
 				module = &batteryModule;
+			}
+			else if(switches == 0b00010000)
+			{
+				module = &tetrisModule;
 			}
 			else
 			{

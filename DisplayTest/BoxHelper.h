@@ -64,7 +64,7 @@ char ReadSwitches()
 	return val;
 }
 
-int ReadJoystickX()
+int8_t ReadJoystickX()
 {
 	if(!((PINA >> 4) & 1U))
 	{
@@ -79,7 +79,7 @@ int ReadJoystickX()
 	return 0;
 }
 
-int ReadJoystickY()
+int8_t ReadJoystickY()
 {
 	if(!((PINA >> 7) & 1U))
 	{
