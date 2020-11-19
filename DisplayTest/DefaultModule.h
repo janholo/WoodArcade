@@ -6,6 +6,7 @@
  */ 
 
 #include "BoxHelper.h"
+#include "sound.h"
 
 #ifndef DEFAULTMODULE_H_
 #define DEFAULTMODULE_H_
@@ -17,6 +18,7 @@ class DefaultModule: public IModule {
 		int16_t x;
 		int16_t y;
 		char displayData[32];
+		bool lastButtons[8];
 	public:
 		virtual void load() 
 		{
@@ -48,7 +50,16 @@ class DefaultModule: public IModule {
 
 			for(int j = 0; j < 8; j++)
 			{
-				WriteButton(j, ReadButton(j));
+				bool b = ReadButton(j);
+				
+				if(!lastButtons[j] && b)
+				{
+					hullCurveCounter = 0;
+					noteCounter = j;
+				}
+				lastButtons[j] = b;
+				
+				WriteButton(j, b);
 			}
 		}
 		

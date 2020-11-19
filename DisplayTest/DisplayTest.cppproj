@@ -182,10 +182,16 @@
     <Compile Include="DisplayHelper.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="JumpModule.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="ModuleInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sound.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="TetrisModule.h">

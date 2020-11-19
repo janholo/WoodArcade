@@ -17,52 +17,10 @@
 #include "DefaultModule.h"
 #include "BatteryModule.h"
 #include "TetrisModule.h"
+#include "JumpModule.h"
 #include "BoxHelper.h"
-#include "waves.h"
+#include "sound.h"
 
-void initSound()
-{
-	// non inverting fast pwm
-	// prescaling 1
-	TCCR0 = (1<<WGM00)|(1<<WGM01)|(1<<COM01)|(1<<CS00);
-	
-	// Use this value to adjust pwm
-	OCR0 = 128;
-	
-	TIMSK |= (1<<TOIE0);
-	
-	// Set timer/pwm pin as output (OC0)
-	DDRB |= (1<<PIN_OC0);
-}
-
-uint8_t soundCount = 0;
-uint16_t hullCurveCounter = 0;
-uint8_t playCounter = 0;
-
-ISR(TIMER0_OVF_vect)
-{
-	// Somehow adjust OCR0 here...
-	soundCount++;
-	soundCount = soundCount % sizeof(sineWave_A4_440);
-	
-	hullCurveCounter++;
-	uint8_t h = hullCurve[hullCurveCounter>>8];	
-	
-	if(hullCurveCounter == 0){
-		playCounter++;
-	}
-	
-	if(playCounter&0x01)
-	{
-		uint16_t value = sineWave_A4_440[soundCount]*h;
-		
-		OCR0 = value>>8;
-	}
-	else
-	{
-		OCR0 = 0;	
-	}	
-}
 
 void init() 
 {
@@ -124,6 +82,7 @@ int main(void)
 	DefaultModule defaultModule;
 	BatteryModule batteryModule;
 	TetrisModule tetrisModule;
+	JumpModule jumpModule;
 	IModule* module = &defaultModule;
 	module->load();
 	
@@ -143,6 +102,10 @@ int main(void)
 			else if(switches == 0b00010000)
 			{
 				module = &tetrisModule;
+			}
+			else if(switches == 0b00001000)
+			{
+				module = &jumpModule;
 			}
 			else
 			{
