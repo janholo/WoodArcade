@@ -93,6 +93,28 @@ void playNull()
 	mode = 0;	
 }
 
+void playJump()
+{
+	OCR2 = 20;
+	currentMusic = music_jump;
+	currentMusicCount = music_jump_count;
+	noteCounter = 0;
+	noteCounterMax = sizeof(music_jump_count);
+	hullCurveCounter = 0;
+	mode = 1;
+}
+
+void playGameOver()
+{
+	OCR2 = 20;
+	currentMusic = music_gameOver;
+	currentMusicCount = music_gameOver_count;
+	noteCounter = 0;
+	noteCounterMax = sizeof(music_gameOver_count);
+	hullCurveCounter = 0;
+	mode = 1;	
+}
+
 ISR(TIMER2_COMP_vect)
 {
 	hullCurveCounter++;
@@ -106,7 +128,11 @@ ISR(TIMER2_COMP_vect)
 		}
 		else if (mode == 1)
 		{
-			// TODO
+			noteCounter++;
+			if(noteCounter >= noteCounterMax)
+			{
+				playNull();
+			}
 		}
 		else if (mode == 2)
 		{

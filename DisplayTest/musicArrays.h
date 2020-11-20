@@ -105,6 +105,30 @@ uint8_t music_whiteKeys_count[] = {
 	sizeof(sineWave_C4_262)
 };
 
+const uint8_t* music_jump[] = {
+	sineWave_C3_131,
+	sineWave_E3_165,
+	sineWave_G3_196,
+};
+
+uint8_t music_jump_count[] = {
+	sizeof(sineWave_C3_131),
+	sizeof(sineWave_E3_165),
+	sizeof(sineWave_G3_196),
+};
+
+const uint8_t* music_gameOver[] = {
+	sineWave_G3_196,
+	sineWave_E3_165,
+	sineWave_C3_131,
+};
+
+uint8_t music_gameOver_count[] = {
+	sizeof(sineWave_G3_196),
+	sizeof(sineWave_E3_165),
+	sizeof(sineWave_C3_131),
+};
+
 const uint8_t* tetris[] = {
 	// 1. line
 	sineWave_E4_330,

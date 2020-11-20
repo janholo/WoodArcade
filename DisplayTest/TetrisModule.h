@@ -618,7 +618,7 @@ class TetrisModule: public IModule
 			pieceY++;
 		}
 		counter++;
-		if(counter > 512)
+		if(counter > 256)
 		{
 			counter = 0;
 			//next tick
