@@ -42,6 +42,8 @@ void init()
 	SPI_MasterInit();
 	
 	initSound();
+	
+	playTetris();
 }
 
 void reset() 

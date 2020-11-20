@@ -191,6 +191,9 @@
     <Compile Include="ModuleInterface.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="musicArrays.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="sound.h">
       <SubType>compile</SubType>
     </Compile>
