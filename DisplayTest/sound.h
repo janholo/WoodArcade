@@ -48,11 +48,12 @@ uint8_t sineWaveCounter = 0;
 uint8_t hullCurveCounter = 0;
 uint8_t hullCurveValue = 255;
 uint8_t noteCounter = 255;
+uint8_t noteCounterMax = sizeof(music_null_count);
 const uint8_t* currentNote = nullSound;
 uint8_t currentNoteCount = sizeof(nullSound);
 
-const uint8_t** currentMusic = music;
-uint8_t* currentMusicCount = music_count;
+const uint8_t** currentMusic = music_null;
+uint8_t* currentMusicCount = music_null_count;
 
 // 0 -> Only play current note and then null
 // 1 -> Only play current music and then null
@@ -65,8 +66,31 @@ void playTetris()
 	currentMusic = tetris;
 	currentMusicCount = tetris_count;
 	noteCounter = 0;
+	noteCounterMax = sizeof(tetris_count);
 	hullCurveCounter = 0;
 	mode = 2;
+}
+
+void playTune(uint8_t tune)
+{
+	OCR2 = 140;
+	currentMusic = music_whiteKeys;
+	currentMusicCount = music_whiteKeys_count;
+	noteCounter = tune;
+	noteCounterMax = sizeof(music_whiteKeys_count);
+	hullCurveCounter = 0;
+	mode = 0;
+}
+
+void playNull()
+{
+	OCR2 = 140;
+	currentMusic = music_null;
+	currentMusicCount = music_null_count;
+	noteCounter = 0;
+	noteCounterMax = sizeof(music_null_count);
+	hullCurveCounter = 0;
+	mode = 0;	
 }
 
 ISR(TIMER2_COMP_vect)
@@ -78,7 +102,7 @@ ISR(TIMER2_COMP_vect)
 	{
 		if(mode == 0)
 		{
-			// TODO
+			playNull();
 		}
 		else if (mode == 1)
 		{
@@ -88,13 +112,11 @@ ISR(TIMER2_COMP_vect)
 		{
 			noteCounter++;
 			// TODO - remove call to sizeof(tetris_count)
-			if(noteCounter >= sizeof(tetris_count))
+			if(noteCounter >= noteCounterMax)
 			{
 				noteCounter = 0;
 			}			
 		}
-		
-
 	}
 	
 	currentNote = currentMusic[noteCounter];

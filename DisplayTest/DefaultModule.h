@@ -54,8 +54,7 @@ class DefaultModule: public IModule {
 				
 				if(!lastButtons[j] && b)
 				{
-					hullCurveCounter = 0;
-					noteCounter = j;
+					playTune(j);
 				}
 				lastButtons[j] = b;
 				

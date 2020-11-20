@@ -265,7 +265,7 @@ class TetrisModule: public IModule
 			debounce[1]++;
 			debounce[3] = 0;
 			
-			if(debounce[1] > 30)
+			if(debounce[1] > 20)
 			{
 				debounce[1] = 0;
 			}
@@ -546,6 +546,7 @@ class TetrisModule: public IModule
 	bool isGameOver;
 	char rowToRemove;
 	int16_t removeCounter;
+	bool lastPlayButtonState;
 
 	public:
 	virtual void load()
@@ -562,6 +563,7 @@ class TetrisModule: public IModule
 		debounce[2] = 0;
 		debounce[3] = 0;
 		removeCounter = 0;
+		lastPlayButtonState = false;
 	}
 	virtual void update()
 	{
@@ -652,13 +654,25 @@ class TetrisModule: public IModule
 		}
 
 		for(int8_t j = 0; j < 8; j++)
-		{
+		{	
 			WriteButton(j, ReadButton(j));
 		}
+		
+		if(ReadButton(0))
+		{
+			playNull();
+		}
+		bool playButton = ReadButton(1);
+		if(playButton && !lastPlayButtonState)
+		{
+			playTetris();
+		}
+		lastPlayButtonState = playButton;
 	}
 	
 	virtual void unload()
 	{
+		playNull();
 	}
 };
 
